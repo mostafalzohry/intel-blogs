@@ -35,17 +35,20 @@ export const ArticlesList: React.FC = () => {
     endDate: null,
   });
 
+  // Function defined outside useEffect - using async/await normally
   const loadData = async () => {
     setLoading(true);
     const articlesData = await fetchArticles();
     setArticles(articlesData);
 
+    // Generate filter options from articles
     const filtersData = generateFilterOptions(articlesData);
     setFilterOptions(filtersData);
 
     setLoading(false);
   };
 
+  // useEffect only calls the function
   useEffect(() => {
     loadData();
   }, []);

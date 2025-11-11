@@ -17,13 +17,13 @@ export interface Article {
   targetLocation: string[];
   threatActors: string[];
   tags: string[];
-  companyName?: string;
-  organization?: string;
-  source?: string;
+  companyName: string;
+  organization: string;
+  source: string;
   websites: string[];
-  industrialGoodsAndServices?: string[];
-  content?: string;
-  relatedIntel?: RelatedIntel[];
+  industrialGoodsAndServices: string[];
+  content: string;
+  relatedIntel: RelatedIntel[];
 }
 
 export interface FilterOptions {
