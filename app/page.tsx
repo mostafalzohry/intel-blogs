@@ -13,13 +13,11 @@ export default function IntelUpdatesDashboard() {
       <Header title="Intel Updates" breadcrumb={["Home", "Intel Updates"]} />
 
       <div className="p-8 space-y-8">
-        {/* Top Stats Section */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <TopTargetedSectors totalSectors={122} />
           <TopTargetedCountries />
         </div>
 
-        {/* Articles Section */}
         <ArticlesList />
       </div>
     </div>

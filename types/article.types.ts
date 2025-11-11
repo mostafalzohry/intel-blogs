@@ -1,3 +1,11 @@
+export interface RelatedIntel {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  image: string;
+}
+
 export interface Article {
   id: string;
   date: string;
@@ -9,6 +17,13 @@ export interface Article {
   targetLocation: string[];
   threatActors: string[];
   tags: string[];
+  companyName?: string;
+  organization?: string;
+  source?: string;
+  websites: string[];
+  industrialGoodsAndServices?: string[];
+  content?: string;
+  relatedIntel?: RelatedIntel[];
 }
 
 export interface FilterOptions {

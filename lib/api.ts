@@ -26,22 +26,17 @@ export function generateFilterOptions(articles: Article[]): FilterOptions {
   const allGroups = new Set<string>();
 
   articles.forEach((article) => {
-    // Collect tags
     article.tags.forEach((tag) => allTags.add(tag));
 
-    // Collect sectors (as industries)
     article.targetSectors.forEach((sector) => {
       allSectors.add(sector);
       allIndustries.add(sector);
     });
 
-    // Collect regions
     article.targetLocation.forEach((location) => allRegions.add(location));
 
-    // Collect categories (types)
     allCategories.add(article.type);
 
-    // Collect threat actors (groups)
     article.threatActors.forEach((actor) => allGroups.add(actor));
   });
 
@@ -53,4 +48,22 @@ export function generateFilterOptions(articles: Article[]): FilterOptions {
     sectors: Array.from(allSectors).sort(),
     groups: Array.from(allGroups).sort(),
   };
+}
+
+export async function fetchArticleById(id: string): Promise<Article | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/articles/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch article: ${response.statusText}`);
+    }
+
+    const article: Article = await response.json();
+    return article;
+  } catch (error) {
+    console.error("Error fetching article:", error);
+    return null;
+  }
 }

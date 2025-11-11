@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/Filters/SearchBar";
 import { FilterSection } from "@/components/Filters/FilterSection";
 import { DateRangeFilter } from "@/components/Filters/DateRangeFilter";
@@ -10,6 +11,7 @@ import { Article, FilterOptions, ArticlesFilters } from "@/types/article.types";
 import { theme } from "@/styles/theme";
 
 export const ArticlesList: React.FC = () => {
+  const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     tags: [],
@@ -71,7 +73,7 @@ export const ArticlesList: React.FC = () => {
   };
 
   const handleArticleClick = (id: string) => {
-    console.log("Navigate to article:", id);
+    router.push(`/intel-updates/${id}`);
   };
 
   const filteredArticles = filterArticles(articles, filters);
@@ -157,6 +159,7 @@ export const ArticlesList: React.FC = () => {
         </div>
       </div>
 
+      {/* Right Content - Articles */}
       <div className="flex-1 space-y-4">
         {filteredArticles.length === 0 ? (
           <div
