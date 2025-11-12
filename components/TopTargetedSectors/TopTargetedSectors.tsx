@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
-import { TimePeriod } from "@/types/dashboard.types";
+import React, { useState, useEffect } from "react";
+import { TimePeriod, DashboardData } from "@/types/dashboard.types";
 import { theme } from "@/styles/theme";
-import { sectorDataByPeriod } from "@/data/mockData";
+import { fetchDashboardData } from "@/lib/api";
 
 interface TopTargetedSectorsProps {
   totalSectors?: number;
@@ -14,13 +14,54 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
   className = "",
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>("year");
-  const rawSectors = sectorDataByPeriod[selectedPeriod];
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
 
-  // Map the color names to actual colors from the theme
-  const sectors = rawSectors.map((sector) => ({
-    ...sector,
-    color: theme.colors.accent[sector.colorName],
-  }));
+  const loadData = async () => {
+    const data = await fetchDashboardData();
+    setDashboardData(data);
+    setLoading(false);
+  };
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  if (loading || !dashboardData) {
+    return (
+      <div
+        className={`rounded-lg p-6 ${className}`}
+        style={{ backgroundColor: theme.colors.cardBg }}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2
+            className="text-xl font-semibold"
+            style={{ color: theme.colors.text.primary }}
+          >
+            Top Targeted Sectors
+          </h2>
+          <div className="w-32 h-10 rounded-lg bg-gray-300 animate-pulse"></div>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  const rawSectors = dashboardData.sectorData[selectedPeriod] ?? [];
+
+  const sectors = rawSectors.map((sector) => {
+    const colorName =
+      dashboardData.sectorColors.find((sc) => sc.name === sector.name)
+        ?.colorName ?? "gray";
+
+    return {
+      ...sector,
+      color: (theme.colors.accent as Record<string, string>)[colorName],
+    };
+  });
 
   const circleSize = 280;
   const strokeWidth = 40;
@@ -29,7 +70,7 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
 
   const segments = sectors.reduce<
     { name: string; percentage: number; offset: number; color: string }[]
-  >((acc, sector, index) => {
+  >((acc, sector) => {
     const prevOffset =
       acc.length > 0
         ? acc[acc.length - 1].offset +
@@ -100,9 +141,8 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
           </svg>
         </div>
 
-        {/* Right side with number and legend */}
+        {/* Right side */}
         <div className="flex-1">
-          {/* Total Sectors */}
           <div className="mb-10">
             <div className="flex items-baseline gap-3">
               <span
@@ -126,7 +166,6 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
             </p>
           </div>
 
-          {/* Legend - Two Columns */}
           <div className="grid grid-cols-2 gap-x-16 gap-y-5">
             {sectors.map((sector, index) => (
               <div key={index} className="flex items-center justify-between">

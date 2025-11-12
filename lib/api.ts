@@ -1,4 +1,5 @@
 import { Article, FilterOptions } from "@/types/article.types";
+import { DashboardData } from "@/types/dashboard.types";
 
 const API_BASE_URL = "https://690f91c345e65ab24ac44093.mockapi.io/api/v1";
 
@@ -65,5 +66,26 @@ export async function fetchArticleById(id: string): Promise<Article | null> {
   } catch (error) {
     console.error("Error fetching article:", error);
     return null;
+  }
+}
+
+export async function fetchDashboardData(): Promise<DashboardData> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/dashboard/1`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch dashboard data");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    // Return default empty structure
+    return {
+      id: "1",
+      sectorColors: [],
+      sectorData: { year: [], month: [], week: [] },
+      countryData: { year: [], month: [], week: [] },
+    };
   }
 }
