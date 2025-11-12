@@ -1,4 +1,5 @@
 import type React from "react";
+import Link from "next/link";
 import type { Article } from "@/types/article.types";
 import { theme } from "@/styles/theme";
 
@@ -23,13 +24,13 @@ export const ArticleWebsitesLocation: React.FC<
             </p>
             <div className="space-y-1">
               {article.websites.map((website, idx) => (
-                <a
+                <Link
                   key={idx}
                   href={website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-xs hover:underline"
-                  style={{ color: theme.colors.secondary }}
+                  style={{ color: theme.colors.text.secondary }}
                 >
                   {website}
                   <svg
@@ -45,7 +46,7 @@ export const ArticleWebsitesLocation: React.FC<
                       d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                     />
                   </svg>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
