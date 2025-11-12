@@ -1,6 +1,7 @@
 import type React from "react";
 import type { Article } from "@/types/article.types";
 import { theme } from "@/styles/theme";
+import Link from "next/link";
 
 interface ArticleMetadataProps {
   article: Article;
@@ -81,15 +82,15 @@ export const ArticleMetadata: React.FC<ArticleMetadataProps> = ({
             >
               Source
             </p>
-            <a
+            <Link
               href={article.source}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs break-all hover:underline line-clamp-2"
-              style={{ color: theme.colors.secondary }}
+              style={{ color: theme.colors.text.secondary }}
             >
               {article.source}
-            </a>
+            </Link>
           </div>
         )}
 

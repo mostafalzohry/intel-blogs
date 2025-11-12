@@ -42,6 +42,7 @@ export const ArticlesList: React.FC = () => {
     setFilterOptions(generateFilterOptions(articlesData));
     setLoading(false);
   };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -67,11 +68,29 @@ export const ArticlesList: React.FC = () => {
     });
   };
 
+  const clearFilters = () => {
+    setFilters({
+      searchQuery: "",
+      selectedTags: [],
+      selectedIndustries: [],
+      selectedRegions: [],
+      selectedCategories: [],
+      selectedSectors: [],
+      selectedGroups: [],
+      startDate: null,
+      endDate: null,
+    });
+  };
+
   const handleArticleClick = (id: string) => {
     router.push(`/intel-updates/${id}`);
   };
 
   const filteredArticles = filterArticles(articles, filters);
+
+  const isFilterActive = Object.values(filters).some((value) =>
+    Array.isArray(value) ? value.length > 0 : value
+  );
 
   if (loading) return <Loading message="Loading articles..." />;
 
@@ -80,9 +99,18 @@ export const ArticlesList: React.FC = () => {
       {/* Left Sidebar - Filters */}
       <div className="w-80 flex-shrink-0">
         <div
-          className="rounded-lg p-6 sticky top-6"
+          className="rounded-lg p-6 sticky top-6 space-y-4"
           style={{ backgroundColor: theme.colors.cardBg }}
         >
+          {isFilterActive && (
+            <button
+              onClick={clearFilters}
+              className="w-full py-2 px-4 rounded bg-red-500 text-white hover:bg-red-600 transition"
+            >
+              Clear Filters
+            </button>
+          )}
+
           <SearchBar
             value={filters.searchQuery}
             onChange={(value) =>
@@ -94,7 +122,6 @@ export const ArticlesList: React.FC = () => {
             options={filterOptions.tags}
             selectedOptions={filters.selectedTags}
             onToggle={(option) => toggleFilter("selectedTags", option)}
-            isOpen={true}
           />
           <FilterSection
             title="Industries"
