@@ -3,15 +3,14 @@ import React, { useState, useEffect } from "react";
 import { TimePeriod, DashboardData } from "@/types/dashboard.types";
 import { theme } from "@/styles/theme";
 import { fetchDashboardData } from "@/lib/api";
+import { Loading } from "../Loading";
 
 interface TopTargetedSectorsProps {
   totalSectors?: number;
-  className?: string;
 }
 
 export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
   totalSectors = 122,
-  className = "",
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>("year");
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
@@ -31,7 +30,7 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
   if (loading || !dashboardData) {
     return (
       <div
-        className={`rounded-lg p-6 ${className}`}
+        className={`rounded-lg p-6`}
         style={{ backgroundColor: theme.colors.cardBg }}
       >
         <div className="flex items-center justify-between mb-6">
@@ -43,9 +42,7 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
           </h2>
           <div className="w-32 h-10 rounded-lg bg-gray-300 animate-pulse"></div>
         </div>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Loading...</div>
-        </div>
+        <Loading message="Loading sectors..." />
       </div>
     );
   }
@@ -87,10 +84,9 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
 
   return (
     <div
-      className={`rounded-lg p-6 ${className}`}
+      className={`rounded-lg p-6`}
       style={{ backgroundColor: theme.colors.cardBg }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2
           className="text-xl font-semibold"

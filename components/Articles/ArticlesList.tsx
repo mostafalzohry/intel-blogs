@@ -9,6 +9,7 @@ import { fetchArticles, generateFilterOptions } from "@/lib/api";
 import { filterArticles } from "@/utils/filterUtils";
 import { Article, FilterOptions, ArticlesFilters } from "@/types/article.types";
 import { theme } from "@/styles/theme";
+import { Loading } from "../Loading";
 
 export const ArticlesList: React.FC = () => {
   const router = useRouter();
@@ -22,7 +23,6 @@ export const ArticlesList: React.FC = () => {
     groups: [],
   });
   const [loading, setLoading] = useState(true);
-
   const [filters, setFilters] = useState<ArticlesFilters>({
     searchQuery: "",
     selectedTags: [],
@@ -35,20 +35,13 @@ export const ArticlesList: React.FC = () => {
     endDate: null,
   });
 
-  // Function defined outside useEffect - using async/await normally
   const loadData = async () => {
     setLoading(true);
     const articlesData = await fetchArticles();
     setArticles(articlesData);
-
-    // Generate filter options from articles
-    const filtersData = generateFilterOptions(articlesData);
-    setFilterOptions(filtersData);
-
+    setFilterOptions(generateFilterOptions(articlesData));
     setLoading(false);
   };
-
-  // useEffect only calls the function
   useEffect(() => {
     loadData();
   }, []);
@@ -70,7 +63,6 @@ export const ArticlesList: React.FC = () => {
       const newArray = currentArray.includes(option)
         ? currentArray.filter((item) => item !== option)
         : [...currentArray, option];
-
       return { ...prev, [filterKey]: newArray };
     });
   };
@@ -81,15 +73,7 @@ export const ArticlesList: React.FC = () => {
 
   const filteredArticles = filterArticles(articles, filters);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <div className="text-xl" style={{ color: theme.colors.text.secondary }}>
-          Loading articles...
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <Loading message="Loading articles..." />;
 
   return (
     <div className="flex gap-6">
@@ -105,7 +89,6 @@ export const ArticlesList: React.FC = () => {
               setFilters((prev) => ({ ...prev, searchQuery: value }))
             }
           />
-
           <FilterSection
             title="Tags"
             options={filterOptions.tags}
@@ -113,42 +96,36 @@ export const ArticlesList: React.FC = () => {
             onToggle={(option) => toggleFilter("selectedTags", option)}
             isOpen={true}
           />
-
           <FilterSection
             title="Industries"
             options={filterOptions.industries}
             selectedOptions={filters.selectedIndustries}
             onToggle={(option) => toggleFilter("selectedIndustries", option)}
           />
-
           <FilterSection
             title="Regions"
             options={filterOptions.regions}
             selectedOptions={filters.selectedRegions}
             onToggle={(option) => toggleFilter("selectedRegions", option)}
           />
-
           <FilterSection
             title="Categories"
             options={filterOptions.categories}
             selectedOptions={filters.selectedCategories}
             onToggle={(option) => toggleFilter("selectedCategories", option)}
           />
-
           <FilterSection
             title="Sector"
             options={filterOptions.sectors}
             selectedOptions={filters.selectedSectors}
             onToggle={(option) => toggleFilter("selectedSectors", option)}
           />
-
           <FilterSection
             title="Group"
             options={filterOptions.groups}
             selectedOptions={filters.selectedGroups}
             onToggle={(option) => toggleFilter("selectedGroups", option)}
           />
-
           <DateRangeFilter
             startDate={filters.startDate}
             endDate={filters.endDate}

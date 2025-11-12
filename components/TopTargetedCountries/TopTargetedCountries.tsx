@@ -3,48 +3,30 @@ import React, { useState, useEffect } from "react";
 import { TimePeriod, DashboardData } from "@/types/dashboard.types";
 import { theme } from "@/styles/theme";
 import { fetchDashboardData } from "@/lib/api";
+import { Loading } from "../Loading";
+import { FlagIcon } from "../FlagIcon";
 
-interface FlagIconProps {
-  countryCode: string;
-  countryName: string;
-}
-
-const FlagIcon: React.FC<FlagIconProps> = ({ countryCode, countryName }) => {
-  return (
-    <img
-      src={`https://flagcdn.com/w80/${countryCode.toLowerCase()}.png`}
-      alt={`${countryName} flag`}
-      className="w-10 h-10 rounded-full object-cover shadow-lg"
-    />
-  );
-};
-
-interface TopTargetedCountriesProps {
-  className?: string;
-}
-
-export const TopTargetedCountries: React.FC<TopTargetedCountriesProps> = ({
-  className = "",
-}) => {
+export const TopTargetedCountries: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>("year");
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
   const [loading, setLoading] = useState(true);
 
+  const loadData = async () => {
+    const data = await fetchDashboardData();
+    setDashboardData(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchDashboardData();
-      setDashboardData(data);
-      setLoading(false);
-    };
     loadData();
   }, []);
 
   if (loading || !dashboardData) {
     return (
       <div
-        className={`rounded-lg p-6 ${className}`}
+        className={`rounded-lg p-6`}
         style={{ backgroundColor: theme.colors.cardBg }}
       >
         <div className="flex items-center justify-between mb-6">
@@ -56,9 +38,7 @@ export const TopTargetedCountries: React.FC<TopTargetedCountriesProps> = ({
           </h2>
           <div className="w-32 h-10 rounded-lg bg-gray-300 animate-pulse"></div>
         </div>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">Loading...</div>
-        </div>
+        <Loading />
       </div>
     );
   }
@@ -67,10 +47,9 @@ export const TopTargetedCountries: React.FC<TopTargetedCountriesProps> = ({
 
   return (
     <div
-      className={`rounded-lg p-6 ${className}`}
+      className={`rounded-lg p-6`}
       style={{ backgroundColor: theme.colors.cardBg }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2
           className="text-xl font-semibold"
