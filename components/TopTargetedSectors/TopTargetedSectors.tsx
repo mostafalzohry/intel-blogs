@@ -109,7 +109,7 @@ export const TopTargetedSectors: React.FC<TopTargetedSectorsProps> = ({
         </select>
       </div>
 
-      <div className="flex items-center gap-16">
+      <div className="flex items-center gap-6">
         {/* Donut Chart */}
         <div className="relative flex-shrink-0">
           <svg
